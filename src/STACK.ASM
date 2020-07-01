@@ -1,0 +1,35 @@
+DATA SEGMENT 
+      N DB 06H
+       FACT DW ?
+DATA ENDS
+MYSTACK SEGMENT STACK
+	DW WORD DUP(0)
+	TOP LABEL WORD
+MYSTACK ENDS
+CODE SEGMENT
+ASSUME CS:CODE, DS:DATA, SS:MYSTACK
+	START:
+        MOV AX, DATA
+        MOV DS, AX
+        MOV AX, MYSTACK
+        MOV SS, AX
+        MOV AX, 1
+        MOV BL, N
+        MOV BH, 0
+        CALL FACTORIAL
+        MOV FACT, AX
+        MOV AH, 4CH
+        INT 21H
+
+        FACTORIAL PROC
+        CMP BX, 1
+        JE L1
+        PUSH BX
+        DEC BX
+        CALL FACTORIAL
+        POP BX
+        MUL BX
+L1:   RET
+        FACTORIAL ENDP
+CODE ENDS
+END START

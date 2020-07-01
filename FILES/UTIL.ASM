@@ -1,0 +1,14 @@
+EXTRA SEGMENT
+        NUM DB 65
+EXTRA ENDS
+CODE SEGMENT
+        ASSUME ES:EXTRA, CS:CODE
+        MOV AX,EXTRA
+        MOV ES,AX
+        MOV DL,NUM
+        MOV AH,02H
+        INT 21H
+        INT 03H
+CODE ENDS
+END
+

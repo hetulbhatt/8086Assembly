@@ -1,0 +1,73 @@
+;fiboinlab.asm
+
+DATA SEGMENT
+
+DATA ENDS
+
+
+CODE SEGMENT
+
+	;init
+	ASSUME CS:CODE,DS:DATA,SS:MYSTACK
+	MOV AX,DATA
+	MOV DS,AX
+	MOV AX,MYSTACK
+	MOV SS,AX
+	LEA SP,TOP
+	
+	;main
+	MOV AX,6
+	PUSH AX
+	CALL FIBO
+	POP AX
+	INT 03H
+	
+	;procedure
+	PROC FIBO
+	
+		;x==0/1?ret:NEXT 
+		MOV BP,SP
+		MOV AX,WORD PTR[BP+2]
+		CMP AX,01
+		JG NEXT
+		MOV BP,SP
+		MOV WORD PTR[BP+2],1
+		RET
+		
+		;init x-1 and x-2
+		NEXT:
+		MOV BX,WORD PTR[BP+2]
+		DEC BX
+		
+		;call fibo(x-1)
+		PUSH BX
+		CALL FIBO
+		POP BX
+		
+		;call fibo(x-2)
+		MOV CX,BX
+		DEC CX
+		PUSH CX
+		CALL FIBO
+		POP CX
+		
+		;add both the results and return
+		ADD BX,CX
+		MOV BP,SP
+		MOV WORD PTR[BP+2],BX
+		RET
+		
+	ENDP
+
+CODE ENDS
+
+
+MYSTACK SEGMENT
+
+	DW 255 DUP(0)
+	TOP LABEL WORD
+	
+MYSTACK ENDS
+
+
+END
